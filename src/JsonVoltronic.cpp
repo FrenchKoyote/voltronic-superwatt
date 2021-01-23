@@ -14,16 +14,16 @@ int JsonVoltronic::buildQPGIS1(WatchPower *watchPower, char *messBuffer){
 
     StaticJsonDocument<256> buffer;
 
-    buffer["gridVoltage"] = watchPower->gridVoltage.str;
-    buffer["gridFreq"] = watchPower->gridFreq.str;
-    buffer["outputVoltage"] = watchPower->outputVoltage.str;
-    buffer["outputFreq"] = watchPower->outputFreq.str;
-    buffer["outputPowerApparent"] = watchPower->outputPowerApparent.str;
-    buffer["outputPowerActive"] = watchPower->outputPowerActive.str;
-    buffer["loadPercent"] = watchPower->loadPercent.str;
-    buffer["batteryVoltage"] = watchPower->batteryVoltage.str;
-    buffer["batteryCurrent"] = watchPower->batteryCurrent.str;
-    buffer["batteryCapacity"] = watchPower->batteryCapacity.str;
+    buffer["gridVoltage"] = watchPower->gridVoltage.flt;
+    buffer["gridFreq"] = watchPower->gridFreq.flt;
+    buffer["outputVoltage"] = watchPower->outputVoltage.flt;
+    buffer["outputFreq"] = watchPower->outputFreq.flt;
+    buffer["outputPowerApparent"] = watchPower->outputPowerApparent.flt;
+    buffer["outputPowerActive"] = watchPower->outputPowerActive.flt;
+    buffer["loadPercent"] = watchPower->loadPercent.flt;
+    buffer["batteryVoltage"] = watchPower->batteryVoltage.flt;
+    buffer["batteryCurrent"] = watchPower->batteryCurrent.flt;
+    buffer["batteryCapacity"] = watchPower->batteryCapacity.flt;
 
     char output[256];
     size_t n = serializeJson(buffer, output);
@@ -37,16 +37,16 @@ int JsonVoltronic::buildQPGIS2(WatchPower *watchPower, char *messBuffer){
 
     StaticJsonDocument<256> buffer;
 
-    buffer["busVoltage"] = watchPower->busVoltage.str;
-    buffer["temperature"] = watchPower->temperature.str;
-    buffer["solarCurrent"] = watchPower->solarCurrent.str;
-    buffer["solarVoltage"] = watchPower->solarVoltage.str;
-    buffer["batteryVoltageSCC"] = watchPower->batteryVoltageSCC.str;
-    buffer["batteryDischargeCurrent"] = watchPower->batteryDischargeCurrent.str;
+    buffer["busVoltage"] = watchPower->busVoltage.flt;
+    buffer["temperature"] = watchPower->temperature.flt;
+    buffer["solarCurrent"] = watchPower->solarCurrent.flt;
+    buffer["solarVoltage"] = watchPower->solarVoltage.flt;
+    buffer["batteryVoltageSCC"] = watchPower->batteryVoltageSCC.flt;
+    buffer["batteryDischargeCurrent"] = watchPower->batteryDischargeCurrent.flt;
     buffer["status"] = watchPower->status.str;
-    buffer["RSV1"] = watchPower->RSV1.str;
-    buffer["RSV2"] = watchPower->RSV2.str;
-    buffer["solarInputPower"] = watchPower->solarInputPower.str;
+    buffer["RSV1"] = watchPower->RSV1.flt;
+    buffer["RSV2"] = watchPower->RSV2.flt;
+    buffer["solarInputPower"] = watchPower->solarInputPower.flt;
     buffer["status2"] = watchPower->status2.str; 
 
     char output[256];
