@@ -172,7 +172,7 @@ void WatchPower::parseQPIGS(const char *buffer){
             "Is Battery Voltage to Steady While Charging",
             "Is Charging On",
             "Is_SCC Charging On",
-            "Is AC Charging On",
+            "Is AC Charging On"
         ],
     ]*/
     copyAndAdvance(status.str,                  buffer, 8);
@@ -185,7 +185,11 @@ void WatchPower::parseQPIGS(const char *buffer){
     /*[
         "flags",
         "Device Status2",
-        ["Is Charging to Float", "Is Switched On", "Is Reserved"],
+        [
+            "Is Charging to Float", 
+            "Is Switched On", 
+            "Is Reserved"
+        ],
     ]*/
     copyAndAdvance(status2.str, buffer, 3);
 
@@ -229,7 +233,6 @@ void WatchPower::parseQPIGS(const char *buffer){
 
 void WatchPower::parseQMOD(const char *buffer){
     buffer++; /* Skip start byte '(' */
-
     mode = buffer[0];
 }
 

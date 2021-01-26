@@ -1,24 +1,6 @@
 //https://github.com/r0oland/ESP32_mini_KiCad_Library
 //https://github.com/espressif/arduino-esp32/blob/master/cores/esp32/HardwareSerial.cpp
 
-//For debugging
-//sudo apt-get install libncurses5 libncurses5:i386
-//sudo apt install libpython2.7
-
-//Configure plateformio.ini
-/*debug_tool = custom
-debug_init_break=
-debug_server =
- $PLATFORMIO_HOME_DIR/packages/tool-openocd-esp32/bin/openocd
- -s
- $PLATFORMIO_HOME_DIR/packages/tool-openocd-esp32/share/openocd/scripts/
- -f
- $PLATFORMIO_HOME_DIR/packages/tool-openocd-esp32/share/openocd/scripts/interface/ftdi/digilent_jtag_smt2.cfg
- -f
- $PLATFORMIO_HOME_DIR/packages/tool-openocd-esp32/share/openocd/scripts/board/esp-wroom-32.cfg
- -c 'ftdi_vid_pid 0x0403 0x6011'
-debug_load_cmd=preload*/
-
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "WatchPower.h"
@@ -27,12 +9,12 @@ debug_load_cmd=preload*/
 #include <PubSubClient.h>
 #include <JsonVoltronic.h>
 
-char ssid[] = "Livebox-A784";    //  your network SSID (name)
+char ssid[] = "Livebox-A784";         //  your network SSID (name)
 char pass[] = "cxvhQN9JvmHFQPoe52";   // your network password
 
 HardwareSerial SerialSuperWatt(2);
 WatchPower watchPower(SerialSuperWatt);
-
+   
 // Initialize the client library
 WiFiClient wifi_client;
 PubSubClient pubsub_client(wifi_client);
@@ -107,14 +89,7 @@ void loop() {
   if(error) {
     Serial.println("************** error detected ! **************");
   }
-  /* Print stats from the inverter to the serial console */
-  /*Serial.print("Solar Current: ");
-  Serial.println(watchPower.solarCurrent.str);
-
-  Serial.print("Solar Voltage: ");
-  Serial.println(watchPower.solarVoltage.str);*/
-
-  
+    
   if (!pubsub_client.connected() || !wifi_client.connected()) {
     reconnect();
   }
@@ -127,6 +102,7 @@ void loop() {
   Serial.println("Sending QPGIS1 message to MQTT topic..");
   Serial.println(JSONmessageBuffer);
 
+  // Send QPIGS1 MQTT message 
   if (pubsub_client.publish("solar/QPIGS1", JSONmessageBuffer, n) == true) {
     Serial.println("Success sending QPGIS1 message");
   } else {
@@ -137,11 +113,13 @@ void loop() {
   memset(JSONmessageBuffer, 0, sizeof(JSONmessageBuffer));
 
   // Create QPGS2 JSON and send message
+  // By default PubSubClient limits the message size to 256 bytes (including header), see the documentation
   n = jmess.buildQPGIS2(& watchPower, JSONmessageBuffer);
 
   Serial.println("Sending QPGIS2 message to MQTT topic..");
   Serial.println(JSONmessageBuffer);
 
+  // Send QPIGS2 MQTT message 
   if (pubsub_client.publish("solar/QPIGS2", JSONmessageBuffer, n) == true) {
     Serial.println("Success sending QPGIS2 message");
   } else {
@@ -151,5 +129,6 @@ void loop() {
   pubsub_client.loop();
   Serial.println("-------------");
  
-  delay(10000);
+  //Wait 5 seconds
+  delay(5000);
 } 
