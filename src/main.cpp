@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <PubSubClient.h>
 #include <JsonVoltronic.h>
+#include <WebServerVoltronic.h>
 
 char ssid[] = "Livebox-A784";         //  your network SSID (name)
 char pass[] = "cxvhQN9JvmHFQPoe52";   // your network password
@@ -19,6 +20,7 @@ WatchPower watchPower(SerialSuperWatt);
 WiFiClient wifi_client;
 PubSubClient pubsub_client(wifi_client);
 JsonVoltronic jmess;
+WebServerVoltronic weserver;
 
 void reconnect() {
   // Loop until we're reconnected
@@ -41,7 +43,6 @@ void reconnect() {
 
 void setup() {
   Serial.begin(115200);
-  //SerialSuperWatt.begin(2400, SERIAL_8N1, 16, 17);
 
   Serial.println("Attempting to connect to WPA network...");
   Serial.print("SSID: ");
@@ -59,7 +60,7 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if(WiFi.status()  == WL_CONNECTED) {
+  /*if(WiFi.status()  == WL_CONNECTED) {
 
     IPAddress addr(192, 168 ,1 ,22);
     pubsub_client.setServer(addr, 1883);
@@ -78,7 +79,10 @@ void setup() {
         delay(5000);
       }
     }
-  }
+  }*/
+
+  //WebServer setup
+  weserver.setup();
 }
 
 void loop() {
@@ -90,7 +94,7 @@ void loop() {
     Serial.println("************** error detected ! **************");
   }
     
-  if (!pubsub_client.connected() || !wifi_client.connected()) {
+  /*if (!pubsub_client.connected() || !wifi_client.connected()) {
     reconnect();
   }
 
@@ -127,8 +131,10 @@ void loop() {
   }
  
   pubsub_client.loop();
-  Serial.println("-------------");
+  Serial.println("-------------");*/
+
+  weserver.handleClient();
  
   //Wait 5 seconds
-  delay(5000);
+  //delay(5000);
 } 

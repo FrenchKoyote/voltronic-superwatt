@@ -1,6 +1,6 @@
 #pragma once
 
-/* WatchPower library by Benoit Galmiche (FrenchKoyote)
+/* Json Voltronic library by Benoit Galmiche (FrenchKoyote)
 */
 
 #include <Arduino.h>
