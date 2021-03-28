@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <PubSubClient.h>
 #include <JsonVoltronic.h>
-#include <WebServerVoltronic.h>
+//#include <WebServerVoltronic.h>
 
 char ssid[] = "Livebox-A784";         //  your network SSID (name)
 char pass[] = "cxvhQN9JvmHFQPoe52";   // your network password
@@ -20,7 +20,7 @@ WatchPower watchPower(SerialSuperWatt);
 WiFiClient wifi_client;
 PubSubClient pubsub_client(wifi_client);
 JsonVoltronic jmess;
-WebServerVoltronic weserver;
+//WebServerVoltronic weserver;
 
 void reconnect() {
   // Loop until we're reconnected
@@ -60,7 +60,7 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  /*if(WiFi.status()  == WL_CONNECTED) {
+  if(WiFi.status()  == WL_CONNECTED) {
 
     IPAddress addr(192, 168 ,1 ,22);
     pubsub_client.setServer(addr, 1883);
@@ -79,10 +79,10 @@ void setup() {
         delay(5000);
       }
     }
-  }*/
+  }
 
   //WebServer setup
-  weserver.setup();
+  //weserver.setup();
 }
 
 void loop() {
@@ -94,7 +94,7 @@ void loop() {
     Serial.println("************** error detected ! **************");
   }
     
-  /*if (!pubsub_client.connected() || !wifi_client.connected()) {
+  if (!pubsub_client.connected() || !wifi_client.connected()) {
     reconnect();
   }
 
@@ -129,12 +129,29 @@ void loop() {
   } else {
     Serial.println("Error sending QPGIS2 message");
   }
+
+   //Empty JSONmessageBuffer
+  memset(JSONmessageBuffer, 0, sizeof(JSONmessageBuffer));
+
+  // Create QPGS3 JSON and send message
+  // By default PubSubClient limits the message size to 256 bytes (including header), see the documentation
+  n = jmess.buildQPGIS3(& watchPower, JSONmessageBuffer);
+
+  Serial.println("Sending QPGIS3 message to MQTT topic..");
+  Serial.println(JSONmessageBuffer);
+
+  // Send QPIGS2 MQTT message 
+  if (pubsub_client.publish("solar/QPIGS3", JSONmessageBuffer, n) == true) {
+    Serial.println("Success sending QPGIS3 message");
+  } else {
+    Serial.println("Error sending QPGIS3 message");
+  }
  
   pubsub_client.loop();
-  Serial.println("-------------");*/
+  Serial.println("-------------");
 
-  weserver.handleClient();
+  //weserver.handleClient();
  
-  //Wait 5 seconds
-  //delay(5000);
+  //Wait 1 seconds
+  delay(1000);
 } 

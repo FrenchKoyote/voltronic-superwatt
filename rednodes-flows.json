@@ -1,0 +1,226 @@
+[
+    {
+        "id": "902486c7.3164a",
+        "type": "tab",
+        "label": "voltronic-superwatt",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "65ce43b9.05b6fc",
+        "type": "mqtt in",
+        "z": "902486c7.3164a",
+        "name": "QPIGS1",
+        "topic": "solar/QPIGS1",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "40a4940.d49906c",
+        "x": 440,
+        "y": 260,
+        "wires": [
+            [
+                "716d996d.0c10b"
+            ]
+        ]
+    },
+    {
+        "id": "716d996d.0c10b",
+        "type": "json",
+        "z": "902486c7.3164a",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 620,
+        "y": 260,
+        "wires": [
+            [
+                "ecf2c0.1a13d54",
+                "8449461a.dce3f8"
+            ]
+        ]
+    },
+    {
+        "id": "ecf2c0.1a13d54",
+        "type": "debug",
+        "z": "902486c7.3164a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 790,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "22da69f1.b09496",
+        "type": "mqtt in",
+        "z": "902486c7.3164a",
+        "name": "QPIGS2",
+        "topic": "solar/QPIGS2",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "40a4940.d49906c",
+        "x": 440,
+        "y": 420,
+        "wires": [
+            [
+                "6ba53347.a64d84"
+            ]
+        ]
+    },
+    {
+        "id": "6ba53347.a64d84",
+        "type": "json",
+        "z": "902486c7.3164a",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "5d5e7aae.84c78c",
+                "fa1f9135.fa2b7"
+            ]
+        ]
+    },
+    {
+        "id": "5d5e7aae.84c78c",
+        "type": "debug",
+        "z": "902486c7.3164a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 770,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "8449461a.dce3f8",
+        "type": "influxdb out",
+        "z": "902486c7.3164a",
+        "influxdb": "4b1f4b54.fcc5d4",
+        "name": "",
+        "measurement": "QPIGS1",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 870,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "fa1f9135.fa2b7",
+        "type": "influxdb out",
+        "z": "902486c7.3164a",
+        "influxdb": "4b1f4b54.fcc5d4",
+        "name": "",
+        "measurement": "QPIGS2",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 850,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "ed90a0d7.396eb",
+        "type": "mqtt in",
+        "z": "902486c7.3164a",
+        "name": "QPIGS3",
+        "topic": "solar/QPIGS3",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "40a4940.d49906c",
+        "x": 440,
+        "y": 540,
+        "wires": [
+            [
+                "d5b4f67d.fdb7c8"
+            ]
+        ]
+    },
+    {
+        "id": "d5b4f67d.fdb7c8",
+        "type": "json",
+        "z": "902486c7.3164a",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 610,
+        "y": 540,
+        "wires": [
+            [
+                "5401c58.98c73bc",
+                "26e29c25.b772ec"
+            ]
+        ]
+    },
+    {
+        "id": "5401c58.98c73bc",
+        "type": "debug",
+        "z": "902486c7.3164a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 770,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "26e29c25.b772ec",
+        "type": "influxdb out",
+        "z": "902486c7.3164a",
+        "influxdb": "4b1f4b54.fcc5d4",
+        "name": "",
+        "measurement": "QPIGS3",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 850,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "40a4940.d49906c",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "MQTT IN",
+        "broker": "192.168.1.22",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "4b1f4b54.fcc5d4",
+        "type": "influxdb",
+        "z": "",
+        "hostname": "192.168.1.22",
+        "port": "8086",
+        "protocol": "http",
+        "database": "superwatt",
+        "name": "",
+        "usetls": false,
+        "tls": ""
+    }
+]

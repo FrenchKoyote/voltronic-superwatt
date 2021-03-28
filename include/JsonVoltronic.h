@@ -18,4 +18,5 @@ public:
     /* Get parameters */
     int buildQPGIS1(WatchPower *watchPower, char *messBuffer);
     int buildQPGIS2(WatchPower *watchPower, char *messBuffer);
+    int buildQPGIS3(WatchPower *watchPower, char *messBuffer);
 };
