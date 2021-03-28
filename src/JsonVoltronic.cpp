@@ -42,11 +42,39 @@ int JsonVoltronic::buildQPGIS2(WatchPower *watchPower, char *messBuffer){
     buffer["solarCurrent"] = watchPower->solarCurrent.flt;
     buffer["solarVoltage"] = watchPower->solarVoltage.flt;
     buffer["batteryVoltageSCC"] = watchPower->batteryVoltageSCC.flt;
-    buffer["batteryDischargeCurrent"] = watchPower->batteryDischargeCurrent.flt;
+    buffer["batteryDischargeCurrent"] = watchPower->batteryDischargeCurrent.flt;    
+    buffer["solarInputPower"] = watchPower->solarInputPower.flt;
+
+    char output[256];
+    size_t n = serializeJson(buffer, output);
+
+    strncpy(messBuffer, output, 256);
+
+    return n;
+}
+
+int JsonVoltronic::buildQPGIS3(WatchPower *watchPower, char *messBuffer){
+
+    StaticJsonDocument<256> buffer;
+
     buffer["status"] = watchPower->status.str;
+
+    String out = watchPower->status.str;
+    
+    //Get byte "Is Load On"
+    buffer["IsLoadOn"] = out.substring(3,4);
+
+    //Get byte "Is Charging On"
+    buffer["IsChargingOn"] = out.substring(5,6);
+
+    //Get byte "Is SCC Charging On"
+    buffer["IsSCCChargingOn"] = out.substring(6,7);
+
+    //Get byte "Is AC Charging On"
+    buffer["IsSACChargingOn"] = out.substring(7,8);
+
     buffer["RSV1"] = watchPower->RSV1.flt;
     buffer["RSV2"] = watchPower->RSV2.flt;
-    buffer["solarInputPower"] = watchPower->solarInputPower.flt;
     buffer["status2"] = watchPower->status2.str; 
 
     char output[256];
