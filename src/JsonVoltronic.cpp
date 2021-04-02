@@ -58,24 +58,17 @@ int JsonVoltronic::buildQPGIS3(WatchPower *watchPower, char *messBuffer){
     StaticJsonDocument<256> buffer;
 
     buffer["status"] = watchPower->status.str;
-
-    String out = watchPower->status.str;
+    buffer["isCharging"] = watchPower->isCharging();
+    buffer["isSolarCharging"] = watchPower->isSolarCharging();
+    buffer["isGridCharging"] = watchPower->isGridCharging();
+    buffer["isOnBattery"] = watchPower->isOnBattery();
+    buffer["isOnGrid"] = watchPower->isOnGrid();
+    buffer["isGridAvailable"] = watchPower->isGridAvailable();
+    buffer["isSolarAvailable"] = watchPower->isSolarAvailable();
     
-    //Get byte "Is Load On"
-    buffer["IsLoadOn"] = out.substring(3,4);
-
-    //Get byte "Is Charging On"
-    buffer["IsChargingOn"] = out.substring(5,6);
-
-    //Get byte "Is SCC Charging On"
-    buffer["IsSCCChargingOn"] = out.substring(6,7);
-
-    //Get byte "Is AC Charging On"
-    buffer["IsSACChargingOn"] = out.substring(7,8);
-
     buffer["RSV1"] = watchPower->RSV1.flt;
     buffer["RSV2"] = watchPower->RSV2.flt;
-    buffer["status2"] = watchPower->status2.str; 
+    buffer["status2"] = watchPower->status2.str;
 
     char output[256];
     size_t n = serializeJson(buffer, output);

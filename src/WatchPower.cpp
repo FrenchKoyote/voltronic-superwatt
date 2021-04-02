@@ -254,15 +254,15 @@ bool WatchPower::refreshData(){
 
     char inputBuffer[256];
 
-    Serial.println(CMD_MODE_INQUIRY);
+    //Serial.println(CMD_MODE_INQUIRY);
     error |= querySolar(CMD_MODE_INQUIRY, inputBuffer, sizeof(inputBuffer));
     parseQMOD(inputBuffer);
     
-    Serial.println(CMD_GENERAL_STATUS);
+    //Serial.println(CMD_GENERAL_STATUS);
     error |= querySolar(CMD_GENERAL_STATUS, inputBuffer, sizeof(inputBuffer));
     parseQPIGS(inputBuffer);
     
-    Serial.println(CMD_WARNING_STATUS);
+    //Serial.println(CMD_WARNING_STATUS);
     error |= querySolar(CMD_WARNING_STATUS, inputBuffer, sizeof(inputBuffer));
     parseWarnings(inputBuffer);
     
