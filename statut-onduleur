@@ -35,6 +35,7 @@ En charge secteur pour batterie
 
 10011101
 
+
 1 "Is SBU Priority Version Added",
 0 "Is Configuration Changed",
 0 "Is SCC Firmware Updated",
@@ -43,3 +44,16 @@ En charge secteur pour batterie
 1 "Is Charging On",
 0 "Is_SCC Charging On",
 1 "Is AC Charging On"
+
+
+Lors de l'erreur
+10010000
+
+1 "Is SBU Priority Version Added",
+0 "Is Configuration Changed",
+0 "Is SCC Firmware Updated",
+1 "Is Load On",
+0 "Is Battery Voltage to Steady While Charging",
+0 "Is Charging On",
+0 "Is_SCC Charging On",
+0 "Is AC Charging On"
