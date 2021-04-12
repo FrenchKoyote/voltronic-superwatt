@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <PubSubClient.h>
 #include <JsonVoltronic.h>
-#include <WebServer.h>
+#include <WebServerVoltronic.h>
 
 TaskHandle_t Task1;
 TaskHandle_t Task2;
@@ -19,106 +19,13 @@ char pass[] = "cxvhQN9JvmHFQPoe52";   // your network password
 HardwareSerial SerialSuperWatt(2);
 WatchPower watchPower(SerialSuperWatt);
 
-const char MAIN_page[] PROGMEM = R"=====(
-<!DOCTYPE html>
-<html>
-<style>
-.card{
-    max-width: 400px;
-     min-height: 250px;
-     background: #02b875;
-     padding: 30px;
-     box-sizing: border-box;
-     color: #FFF;
-     margin:20px;
-     box-shadow: 0px 2px 18px -4px rgba(0,0,0,0.75);
-}
-</style>
-<body>
-
-<div class="card">
-  <h4>Onduleur Superwatt</h4><br>
-  <h4>Mode de chargement des batteries : <span id="ChargingValue">0</span></h4><br>
-</div>
-
-<button oncLick="setChargePrioritySolar()"> Par solaire </button>
-<button oncLick="setChargePriorityUtility()"> Par reseau </button>
-
-<div class="card">
-  <h4>Onduleur Superwatt</h4><br>
-  <h4>Mode de sortie életrique : <span id="OuputValue">0</span></h4><br>
-</div>
-
-<button oncLick="setOutputPrioritySolar()"> Par solaire </button>
-<button oncLick="setOutputPriorityUtility()"> Par reseau </button>
-
-<script>
-
-function setChargePriorityUtility() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("ChargingValue").innerHTML =
-      this.responseText;
-    }
-  };
-  xhttp.open("GET", "setChargePriorityUtility", true);
-  xhttp.send();
-}
-
-function setChargePrioritySolar() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("ChargingValue").innerHTML =
-      this.responseText;
-    }
-  };
-  xhttp.open("GET", "setChargePrioritySolar", true);
-  xhttp.send();
-}
-
-function setOutputPrioritySolar() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("OuputValue").innerHTML =
-      this.responseText;
-    }
-  };
-  xhttp.open("GET", "setOutputPrioritySolar", true);
-  xhttp.send();
-}
-
-function setOutputPriorityUtility() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("OuputValue").innerHTML =
-      this.responseText;
-    }
-  };
-  xhttp.open("GET", "setOutputPriorityUtility", true);
-  xhttp.send();
-}
-
-
-</script>
-</body>
-</html>
-)=====";
-
-WebServer server(80);
+WebServerVoltronic webserver(watchPower);
    
 // Initialize the client library
 WiFiClient wifi_client;
 PubSubClient pubsub_client(wifi_client);
 JsonVoltronic jmess;
 
-void handleRoot() {
- String s = MAIN_page; //Read HTML contents
- server.send(200, "text/html", s); //Send web page
-}
 
 void reconnect() {
   // Loop until we're reconnected
@@ -139,94 +46,12 @@ void reconnect() {
   }
 }
 
-void setChargePriorityUtility() {
- 
- Serial.println("inside setChargePriorityUtility");
-
- String s="";
-
- if(watchPower.setChargePriority(WatchPower::ChargePriorities::UtilityFirst))
- {
-   s = "Chargement par réseau appliqué.";
- }
- else
- {
-   s = "Chargement par réseau non appliqué.";
- }
-  
- server.send(200, "text/plain", s);
-
- Serial.println("outside setChargePriorityUtility");
-}
-
-void setChargePrioritySolar() {
- 
- Serial.println("inside setChargePrioritySolar");
-
- String s="";
-
- if(watchPower.setChargePriority(WatchPower::ChargePriorities::SolarFirst))
- {
-   s = "Chargement par solaire appliqué.";
- }
- else
- {
-   s = "Chargement par solaire non appliqué.";
- }
-  
- server.send(200, "text/plain", s);
-
- Serial.println("outside setChargePrioritySolar");
-}
-
-void setOutputPrioritySolar() {
- 
- Serial.println("inside setOutputPrioritySolar");
-
- String s="";
-
- if(watchPower.setOutputSourcePriority(WatchPower::OutputSourcePriorities::SolarFirst))
- {
-   s = "Sortie par solaire appliquée.";
- }
- else
- {
-   s = "Sortie par solaire non appliquée.";
- }
-  
- server.send(200, "text/plain", s);
-
- Serial.println("outside setOutputPrioritySolar");
-}
-
-
-void setOutputPriorityUtility() {
- 
- Serial.println("inside setOutputPriorityUtility");
-
- String s="";
-
- if(watchPower.setOutputSourcePriority(WatchPower::OutputSourcePriorities::UtilityFirst))
- {
-   s = "Chargement par réseau appliqué.";
- }
- else
- {
-   s = "Chargement par réseau non appliqué.";
- }
-  
- server.send(200, "text/plain", s);
-
- Serial.println("outside setOutputPriorityUtility");
-}
-
-
 void Task1code( void * pvParameters ){
   Serial.println("Task1 running on core ");
   Serial.print(xPortGetCoreID());
 
   for(;;){
-      server.handleClient();
+      //server.handleClient();
       delay(1);
   } 
 }
@@ -301,9 +126,7 @@ void Task2code( void * pvParameters ){
     
       //Wait 1 seconds
       delay(1000);
-      } 
-
-
+      }
 }
 
 void setup() {
@@ -357,14 +180,7 @@ void setup() {
                     0);          /* pin task to core 0 */                  
   delay(500); 
 
-  server.on("/", handleRoot);      //This is display page
-  server.on("/setChargePriorityUtility", setChargePriorityUtility); 
-  server.on("/setChargePrioritySolar", setChargePrioritySolar); 
-  server.on("/setOutputPriorityUtility", setOutputPriorityUtility); 
-  server.on("/setOutputPrioritySolar", setOutputPrioritySolar); 
- 
-  server.begin();                  //Start server
-  Serial.println("HTTP server started");
+
 
   //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
   xTaskCreatePinnedToCore(
@@ -378,7 +194,4 @@ void setup() {
   delay(500); 
 }
 
-void loop() {
-
-  
-} 
+void loop() { } 
