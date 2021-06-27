@@ -167,8 +167,6 @@ void setup() {
     pubsub_client.setServer(addr, 1883);
 
     mqttConnection();
-
-    webserver.setup();
   }
 
   //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
