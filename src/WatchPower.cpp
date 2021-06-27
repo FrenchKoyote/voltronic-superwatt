@@ -225,7 +225,7 @@ void WatchPower::parseQPIGS(const char *buffer){
     solarInputPower.flt         = atof(solarInputPower.str);
 
     /* Parse status2 */
-    status.status.byte = 0;
+    status2.status.byte = 0;
     for(int i=0; i<3; i++){
         status2.status.byte |= (status2.str[2-i] - '0')<<i;
     }

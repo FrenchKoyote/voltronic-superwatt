@@ -157,7 +157,7 @@ void WebServerVoltronic::buildHomePage(){
 }
 
 void WebServerVoltronic::buildNotFoundPage(){
-    wserver.send(404, "text/plain","404: Not found");
+  wserver.send(404, "text/plain","404: Not found");
 }
 
 void WebServerVoltronic::setChargePriorityUtility() {

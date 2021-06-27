@@ -20,14 +20,33 @@ HardwareSerial SerialSuperWatt(2);
 WatchPower watchPower(SerialSuperWatt);
 
 WebServerVoltronic webserver(watchPower);
-   
+
 // Initialize the client library
 WiFiClient wifi_client;
 PubSubClient pubsub_client(wifi_client);
 JsonVoltronic jmess;
 
+void wifiConnection()
+{
+  Serial.println("Attempting to connect to WPA network...");
+  Serial.print("SSID: ");
+  Serial.println(ssid);
 
-void reconnect() {
+  WiFi.begin(ssid, pass);
+
+  while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void mqttConnection()
+{
   // Loop until we're reconnected
   while (!pubsub_client.connected()) {
     Serial.print("Attempting MQTT connection...");
@@ -46,12 +65,19 @@ void reconnect() {
   }
 }
 
+void reconnect() {
+  wifiConnection ();
+  mqttConnection();
+
+  webserver.setup();
+}
+
 void Task1code( void * pvParameters ){
   Serial.println("Task1 running on core ");
   Serial.print(xPortGetCoreID());
 
   for(;;){
-      //server.handleClient();
+      webserver.handleClient();
       delay(1);
   } 
 }
@@ -126,47 +152,23 @@ void Task2code( void * pvParameters ){
     
       //Wait 1 seconds
       delay(1000);
-      }
+    }
 }
+
 
 void setup() {
   Serial.begin(115200);
 
-  Serial.println("Attempting to connect to WPA network...");
-  Serial.print("SSID: ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, pass);
-
-  while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
+  wifiConnection();
 
   if(WiFi.status()  == WL_CONNECTED) {
 
     IPAddress addr(192, 168 ,1 ,22);
     pubsub_client.setServer(addr, 1883);
 
-    while (!pubsub_client.connected())
-    {
-      Serial.print("Attempting MQTT connection...");
-      // Attempt to connect
-      if (pubsub_client.connect("ESP32Client")) {
-        Serial.println("connected");
-      } else {
-        Serial.print("failed, rc=");
-        Serial.print(pubsub_client.state());
-        Serial.println(" try again in 5 seconds");
-        // Wait 5 seconds before retrying
-        delay(5000);
-      }
-    }
+    mqttConnection();
+
+    webserver.setup();
   }
 
   //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
