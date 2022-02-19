@@ -10,10 +10,13 @@
 #include <JsonVoltronic.h>
 #include <WebServerVoltronic.h>
 
+unsigned long previousMillis = 0;
+unsigned long interval = 30000;
+
 TaskHandle_t Task1;
 TaskHandle_t Task2;
 
-char ssid[] = "Livebox-A784";         //  your network SSID (name)
+char ssid[] = "FrenchKoyote";         //  your network SSID (name)
 char pass[] = "cxvhQN9JvmHFQPoe52";   // your network password
 
 HardwareSerial SerialSuperWatt(2);
@@ -26,50 +29,32 @@ WiFiClient wifi_client;
 PubSubClient pubsub_client(wifi_client);
 JsonVoltronic jmess;
 
-void wifiConnection()
-{
-  Serial.println("Attempting to connect to WPA network...");
-  Serial.print("SSID: ");
-  Serial.println(ssid);
-
+void initWiFi() {
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, pass);
-
+  Serial.print("Connecting to WiFi ..");
   while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
+    Serial.print('.');
+    delay(1000);
   }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
 void mqttConnection()
 {
-  // Loop until we're reconnected
-  while (!pubsub_client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-    if (pubsub_client.connect("ESP32Client")) {
-      Serial.println("connected");
-      // Subscribe
-      //pubsub_client.subscribe("esp32/output");
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(pubsub_client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
+  Serial.print("Attempting MQTT connection...");
+  // Attempt to connect
+  if (pubsub_client.connect("ESP32Client")) {
+    Serial.println("connected");
+    // Subscribe
+    //pubsub_client.subscribe("esp32/output");
+  } else {
+    Serial.print("failed, rc=");
+    Serial.print(pubsub_client.state());
+    Serial.println(" try again in 5 seconds");
+    // Wait 5 seconds before retrying
+    delay(5000);
   }
-}
-
-void reconnect() {
-  wifiConnection ();
-  mqttConnection();
-
-  webserver.setup();
 }
 
 void Task1code( void * pvParameters ){
@@ -93,9 +78,19 @@ void Task2code( void * pvParameters ){
       if(error) {
         Serial.println("************** error detected ! **************");
       }
-        
-      if (!pubsub_client.connected() || !wifi_client.connected()) {
-        reconnect();
+
+      unsigned long currentMillis = millis();
+      // if WiFi is down, try reconnecting every CHECK_WIFI_TIME seconds
+      if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >=interval)) {
+        Serial.print(millis());
+        Serial.println("Reconnecting to WiFi...");
+        WiFi.disconnect();
+        WiFi.reconnect();
+        previousMillis = currentMillis;
+      }
+
+      if (!pubsub_client.connected()) {
+        mqttConnection();
       }
 
       // Create QPGS1 JSON and send message
@@ -159,14 +154,15 @@ void Task2code( void * pvParameters ){
 void setup() {
   Serial.begin(115200);
 
-  wifiConnection();
+  initWiFi();
 
-  if(WiFi.status()  == WL_CONNECTED) {
+  if(WiFi.status() == WL_CONNECTED) {
 
     IPAddress addr(192, 168 ,1 ,22);
     pubsub_client.setServer(addr, 1883);
 
     mqttConnection();
+    webserver.setup();
   }
 
   //create a task that will be executed in the Task1code() function, with priority 1 and executed on core 0
