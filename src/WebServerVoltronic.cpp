@@ -118,7 +118,7 @@ function getChargePriority() {
 
 function getStatus() {
  getOutputPriority();
- getChargePriority();
+ setTimeout(getChargePriority, 500);
 }
 
 window.onload = getStatus;
